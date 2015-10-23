@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'progressbar'
 
-time_in_seconds = ARGV[0].to_i
+time_in_minutes = ARGV[0].to_i
 reminder = ARGV[1]
 
 def put(str)
@@ -11,9 +11,9 @@ def put(str)
   $stdout.flush
 end
 
-pbar = ProgressBar.new("Remaining", time_in_seconds)
+pbar = ProgressBar.new("Remaining", time_in_minutes)
 
-time_in_seconds.times {sleep(1); pbar.inc}; pbar.finish
+time_in_minutes.times {sleep(60); pbar.inc}; pbar.finish
 
 puts reminder
 `terminal-notifier -message "reminder" -title "Red Leader"`
@@ -22,6 +22,6 @@ puts reminder
 put "Minutes overtime:   |"
 
 while true do
-  sleep 1
+  sleep 60 
   put "o"
 end
