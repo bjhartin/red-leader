@@ -1,0 +1,27 @@
+#! /usr/local/bin/ruby
+
+require 'rubygems'
+require 'progressbar'
+
+time_in_seconds = ARGV[0].to_i
+reminder = ARGV[1]
+
+def put(str)
+  print str
+  $stdout.flush
+end
+
+pbar = ProgressBar.new("Remaining", time_in_seconds)
+
+time_in_seconds.times {sleep(1); pbar.inc}; pbar.finish
+
+puts reminder
+`terminal-notifier -message "reminder" -title "Red Leader"`
+
+
+put "Minutes overtime:   |"
+
+while true do
+  sleep 1
+  put "o"
+end
