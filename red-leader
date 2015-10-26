@@ -17,7 +17,7 @@ pbar = ProgressBar.new("Remaining", time_in_minutes)
 
 
 time_in_minutes.times do
-  sleep(1)
+  sleep(60)
   pbar.inc
 end
 
@@ -31,8 +31,8 @@ put "Minutes overtime:   |"
 
 i = 1
 while true do
-  sleep 1
-  tick = (i % 5 == 0) ? "O" : "o"
+  sleep 60
+  tick = (i % 10 == 0) ? "O" : "o"
   tick = case i 
   when 0..10
     tick.colorize(:green)
