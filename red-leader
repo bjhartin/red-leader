@@ -6,7 +6,7 @@ require 'colorize'
 
 @time_in_minutes = ARGV[0].to_i
 @reminder = ARGV[1]
-@sleep_time = 60
+@sleep_time = 60 
 @progress = 0
 @overtime = 0
 
@@ -31,8 +31,8 @@ def display_progress_bar(time_in_minutes, sleep_time)
 end
 
 def notify(message)
-  puts message
-  `terminal-notifier -message "#{message}" -title "Red Leader"`
+  puts "Time's up!" 
+  `terminal-notifier -message "#{message}: Time's up!" -title "Red Leader"`
 end
 
 def show_overtime(sleep_time)
@@ -54,9 +54,18 @@ def show_overtime(sleep_time)
   end
 end
 
+def capture_reason()
+  puts "\nWhy did you take longer than your estimate?"
+  STDIN.gets.chomp
+end
+
 def write_results(goal, estimate, actual)
+  reason = if actual > estimate
+    ", \"reason\": \"#{capture_reason()}\""
+  end
+
   File.open(File.expand_path("~/.red-leader"), "a") do |f|
-    f.puts "{\"goal\":\"#{goal}\", \"estimate\":\"#{estimate}\", \"actual\":\"#{actual}\""
+    f.puts "{\"goal\":\"#{goal}\", \"estimate\":\"#{estimate}\", \"actual\":\"#{actual}\"#{reason}}"
   end
 end
 
