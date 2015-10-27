@@ -6,7 +6,9 @@ require 'colorize'
 
 @time_in_minutes = ARGV[0].to_i
 @reminder = ARGV[1]
-@sleep_time = 60 
+@sleep_time = 1
+@progress = 0
+@overtime = 0
 
 def put(str)
   print str
@@ -22,6 +24,7 @@ def display_progress_bar(time_in_minutes, sleep_time)
   time_in_minutes.times do
     sleep(sleep_time)
     beep() if (pbar.current + 1) % 5 == 0
+    @progress = pbar.current
     pbar.inc
   end
   pbar
@@ -35,11 +38,10 @@ end
 def show_overtime(sleep_time)
   put "Minutes overtime:   |"
 
-  i = 1
   while true do
     sleep(sleep_time)
-    tick = (i % 10 == 0) ? "O" : "o"
-    tick = case i
+    tick = (@overtime % 10 == 0) ? "O" : "o"
+    tick = case @overtime
     when 0..10
       tick.colorize(:green)
     when 11..15
@@ -48,13 +50,23 @@ def show_overtime(sleep_time)
       tick.colorize(:red)
     end
     print tick
-    i = i + 1
+    @overtime = @overtime + 1
   end
 end
 
+def write_results(goal, estimate, actual)
+  File.open(File.expand_path("~/.red-leader"), "a") do |f|
+    f.puts "{\"goal\":\"#{goal}\", \"estimate\":\"#{estimate}\", \"actual\":\"#{actual}\""
+  end
+end
 
+begin
 puts "Stay on target: #{@reminder}"
 pbar = display_progress_bar(@time_in_minutes, @sleep_time)
 pbar.finish
 notify(@reminder)
 show_overtime(@sleep_time)
+rescue SystemExit, Interrupt => e
+  write_results(@reminder, @time_in_minutes, @progress + @overtime + 1)
+  puts "\nBye."
+end
