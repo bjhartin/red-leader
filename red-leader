@@ -6,7 +6,7 @@ require 'colorize'
 
 @time_in_minutes = ARGV[0].to_i
 @reminder = ARGV[1]
-@sleep_time = 1
+@sleep_time = 60
 @progress = 0
 @overtime = 0
 
