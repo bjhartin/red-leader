@@ -4,9 +4,9 @@ require 'rubygems'
 require 'progressbar'
 require 'colorize'
 
-time_in_minutes = ARGV[0].to_i
-reminder = ARGV[1]
-sleep_time = 60
+@time_in_minutes = ARGV[0].to_i
+@reminder = ARGV[1]
+@sleep_time = 60 
 
 def put(str)
   print str
@@ -17,34 +17,44 @@ def beep()
   system('printf "\a"')
 end
 
-puts "Stay on target: #{reminder}"
-pbar = ProgressBar.new("Remaining", time_in_minutes)
-
-time_in_minutes.times do
-  sleep(sleep_time)
-  beep() if (pbar.current + 1) % 5 == 0
-  pbar.inc
-end
-
-pbar.finish
-
-puts reminder
-`terminal-notifier -message "reminder" -title "Red Leader"`
-
-put "Minutes overtime:   |"
-
-i = 1
-while true do
-  sleep(sleep_time)
-  tick = (i % 10 == 0) ? "O" : "o"
-  tick = case i 
-  when 0..10
-    tick.colorize(:green)
-  when 11..15
-    tick.colorize(:yellow)
-  else 
-    tick.colorize(:red)
+def display_progress_bar(time_in_minutes, sleep_time)
+  pbar = ProgressBar.new("Remaining", time_in_minutes)
+  time_in_minutes.times do
+    sleep(sleep_time)
+    beep() if (pbar.current + 1) % 5 == 0
+    pbar.inc
   end
-  print tick
-  i = i + 1
+  pbar
 end
+
+def notify(message)
+  puts message
+  `terminal-notifier -message "#{message}" -title "Red Leader"`
+end
+
+def show_overtime(sleep_time)
+  put "Minutes overtime:   |"
+
+  i = 1
+  while true do
+    sleep(sleep_time)
+    tick = (i % 10 == 0) ? "O" : "o"
+    tick = case i
+    when 0..10
+      tick.colorize(:green)
+    when 11..15
+      tick.colorize(:yellow)
+    else
+      tick.colorize(:red)
+    end
+    print tick
+    i = i + 1
+  end
+end
+
+
+puts "Stay on target: #{@reminder}"
+pbar = display_progress_bar(@time_in_minutes, @sleep_time)
+pbar.finish
+notify(@reminder)
+show_overtime(@sleep_time)
