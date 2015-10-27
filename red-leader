@@ -6,18 +6,23 @@ require 'colorize'
 
 time_in_minutes = ARGV[0].to_i
 reminder = ARGV[1]
+sleep_time = 60
 
 def put(str)
   print str
   $stdout.flush
 end
 
+def beep()
+  system('printf "\a"')
+end
+
 puts "Stay on target: #{reminder}"
 pbar = ProgressBar.new("Remaining", time_in_minutes)
 
-
 time_in_minutes.times do
-  sleep(60)
+  sleep(sleep_time)
+  beep() if (pbar.current + 1) % 5 == 0
   pbar.inc
 end
 
@@ -26,12 +31,11 @@ pbar.finish
 puts reminder
 `terminal-notifier -message "reminder" -title "Red Leader"`
 
-
 put "Minutes overtime:   |"
 
 i = 1
 while true do
-  sleep 60
+  sleep(sleep_time)
   tick = (i % 10 == 0) ? "O" : "o"
   tick = case i 
   when 0..10
