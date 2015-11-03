@@ -60,14 +60,12 @@ def capture_reason()
 end
 
 def write_results(goal, estimate, actual)
-  time = Time.now
-  formatted_time = time.strftime("%Y/%m/%d %H:%M") 
   reason = if actual > estimate
     ", \"reason\": \"#{capture_reason()}\""
   end
 
   File.open(File.expand_path("~/.red-leader"), "a") do |f|
-    f.puts "{\"dateTime\":\"#{formatted_time}\", \"goal\":\"#{goal}\", \"estimate\":\"#{estimate}\", \"actual\":\"#{actual}\"#{reason}}"
+    f.puts "{\"goal\":\"#{goal}\", \"estimate\":\"#{estimate}\", \"actual\":\"#{actual}\"#{reason}}"
   end
 end
 
