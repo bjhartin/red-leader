@@ -59,6 +59,11 @@ def capture_reason()
   STDIN.gets.chomp
 end
 
+def say_goodbye()
+  puts "\nEstimate: #{@time_in_minutes} min, actual: #{@overtime + @time_in_minutes}"
+  puts "Bye."
+end
+
 def write_results(goal, estimate, actual)
   time = Time.now
   formatted_time = time.strftime("%Y/%m/%d %H:%M") 
@@ -79,5 +84,5 @@ notify(@reminder)
 show_overtime(@sleep_time)
 rescue SystemExit, Interrupt => e
   write_results(@reminder, @time_in_minutes, @progress + @overtime + 1)
-  puts "\nBye."
+  say_goodbye
 end
